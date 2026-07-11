@@ -1,0 +1,4356 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#050508">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ERP Caperuso">
+    <title>ERP Caperuso</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff0055;
+            --primary-dark: #cc0044;
+            --secondary: #1da2f5;
+            --accent: #ff0055;
+            --success: #00d4aa;
+            --warning: #ffa726;
+            --danger: #ef5350;
+
+            /* Dark Theme Colors */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(18, 18, 26, 0.95);
+            --bg-elevated: #1a1a28;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3e;
+
+            /* Legacy mappings */
+            --dark: #ffffff;
+            --dark-light: #16213e;
+            --gray: #8888a0;
+            --gray-light: #2a2a3e;
+            --white: #ffffff;
+
+            --sidebar-width: 280px;
+            --header-height: 70px;
+
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-logo {
+            max-width: 100%;
+            height: auto;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .sidebar-header p {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 0, 85, 0.15) 0%, transparent 100%);
+            color: var(--primary);
+        }
+
+        .nav-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-item span {
+            font-weight: 500;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header .actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(153, 50, 204, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(153, 50, 204, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-3);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-success {
+            background: var(--gradient-4);
+            color: var(--white);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Grid System */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card.purple::before {
+            background: var(--gradient-1);
+        }
+
+        .stat-card.blue::before {
+            background: var(--gradient-3);
+        }
+
+        .stat-card.pink::before {
+            background: var(--gradient-2);
+        }
+
+        .stat-card.green::before {
+            background: var(--gradient-4);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .stat-card.purple .stat-icon {
+            background: var(--gradient-1);
+        }
+
+        .stat-card.blue .stat-icon {
+            background: var(--gradient-3);
+        }
+
+        .stat-card.pink .stat-icon {
+            background: var(--gradient-2);
+        }
+
+        .stat-card.green .stat-icon {
+            background: var(--gradient-4);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: var(--gradient-1);
+        }
+
+        .table thead th {
+            padding: 1rem;
+            text-align: left;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 0, 85, 0.08);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 0, 85, 0.15);
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Pipeline */
+        .pipeline-container {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        .pipeline-column {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(18, 18, 26, 0.6);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+        }
+
+        .pipeline-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .pipeline-count {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.25rem 0.625rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pipeline-item {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: var(--shadow-sm);
+            cursor: move;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .pipeline-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .pipeline-drop-zone.drag-over {
+            background: rgba(255, 0, 85, 0.1);
+            border: 2px dashed var(--primary);
+        }
+
+        /* Health Score Badge */
+        .health-score-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .health-score-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .health-score-badge.status-green { color: var(--success); }
+        .health-score-badge.status-yellow { color: var(--warning); }
+        .health-score-badge.status-red { color: var(--danger); }
+
+        /* Bento Grid Strategy */
+        .bento-grid-strategy {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(100px, auto);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .bento-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bento-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        .bento-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .bento-item.medium {
+            grid-column: span 2;
+        }
+
+        .bento-item i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .bento-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .bento-item .content {
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        .bento-item.accent-emerald { border-left: 4px solid var(--success); }
+        .bento-item.accent-blue { border-left: 4px solid var(--secondary); }
+        .bento-item.accent-purple { border-left: 4px solid #a855f7; }
+        .bento-item.accent-orange { border-left: 4px solid #f97316; }
+
+        /* ============================================================
+           AI COMPONENT STYLES (ZENITH NEURAL DESIGN)
+           ============================================================ */
+        :root {
+            --ai-accent-emerald: #10b981;
+            --ai-accent-blue: #3b82f6;
+            --ai-text-dim: rgba(160, 160, 176, 0.8);
+        }
+
+        .neural-log {
+            background: rgba(5, 5, 8, 0.6) !important;
+            border: 1px solid rgba(16, 185, 129, 0.2) !important;
+            box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.05) !important;
+            position: relative;
+        }
+
+        .neural-log::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: var(--ai-accent-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--ai-accent-emerald);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.4; }
+        }
+
+        .subject-badge {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            color: var(--ai-accent-emerald);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .subject-badge:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--ai-accent-emerald);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .buffer-editor {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+
+        .buffer-editor::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .buffer-editor::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .advice-box {
+            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 85%;
+                max-width: 320px;
+                box-shadow: 20px 0 50px rgba(0,0,0,0.8);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 5rem; /* Space for mobile button */
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .page-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .page-header .actions {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 5px;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+
+            /* Pipeline Mobile Optimization */
+            .pipeline-container {
+                scroll-snap-type: x mandatory;
+                padding: 0.5rem;
+                gap: 0.75rem;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .pipeline-column {
+                min-width: 85vw;
+                scroll-snap-align: center;
+                height: calc(100vh - 200px);
+                overflow-y: auto;
+            }
+
+            /* Table Mobile Fix */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table {
+                min-width: 600px;
+            }
+
+            /* Modal Mobile */
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+                max-height: 95vh;
+            }
+
+            .modal-body {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Extremely Small Screens */
+        @media (max-width: 480px) {
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .bento-grid-strategy {
+                grid-template-columns: 1fr;
+            }
+            
+            .bento-item.large, .bento-item.medium {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(255, 167, 38, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 83, 80, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-primary {
+            background: rgba(153, 50, 204, 0.1);
+            color: var(--primary);
+        }
+
+        /* Charts Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        /* Customer Profile */
+        .customer-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .customer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .customer-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .customer-info p {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--gray-light);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Quotation Document Style */
+        .quotation-document {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            padding: 1rem;
+        }
+
+        .quotation-document .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .quotation-document .doc-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .quotation-document .section-header {
+            background: var(--bg-elevated);
+            padding: 0.5rem 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 1.5rem 0 1rem 0;
+            border-radius: 8px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .quotation-document .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quotation-document .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .quotation-document .info-table td {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .quotation-document .info-table .label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            width: 140px;
+        }
+
+        .quotation-document .items-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .quotation-document .items-table th {
+            background: var(--bg-elevated);
+            color: var(--primary);
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .quotation-document .items-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .quotation-document .items-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .quotation-document .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .quotation-document .totals-table {
+            width: 350px;
+            border-collapse: collapse;
+        }
+
+        .quotation-document .totals-table td {
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .quotation-document .totals-table .total-row {
+            background: var(--primary);
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-radius: 8px;
+        }
+
+        .quotation-document .materials-summary {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px dashed var(--primary);
+            color: var(--text-primary);
+        }
+
+        .quotation-document .terms-box {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            background: var(--bg-elevated);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .quotation-document .terms-box h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            background: var(--primary);
+            border: none;
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 0, 85, 0.4);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 0, 85, 0.5);
+        }
+
+        .mobile-menu-btn.active {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .mobile-menu-btn .fa-bars,
+        .mobile-menu-btn .fa-times {
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn.active .fa-bars {
+            display: none;
+        }
+
+        .mobile-menu-btn .fa-times {
+            display: none;
+        }
+
+        .mobile-menu-btn.active .fa-times {
+            display: block;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .sidebar {
+                z-index: 1050;
+            }
+
+            .sidebar-header {
+                padding: 1rem;
+            }
+
+            .sidebar-logo {
+                max-height: 60px;
+            }
+
+            /* Dashboard Topbar Mobile */
+            .db-topbar {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.75rem;
+                align-items: flex-start;
+                margin-bottom: 1rem;
+            }
+
+            .db-topbar-right {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                align-items: center;
+            }
+
+            .db-btn-new {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            /* Smart Inbox Mobile */
+            .smart-inbox-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .smart-inbox-layout > div:first-child {
+                border-right: none !important;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                max-height: 200px; /* Reduced folder list on mobile */
+                overflow-y: auto;
+            }
+
+            /* Quoter Section mobile */
+            .quoter-item-row {
+                flex-direction: column;
+                gap: 10px;
+                padding: 1rem;
+            }
+
+            /* Better Inputs on Mobile (prevents iOS zoom) */
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 0;
+            }
+
+            .modal-header, .modal-body, .modal-footer {
+                padding: 1rem;
+            }
+
+            .form-grid, .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr !important;
+            }
+
+            canvas {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+
+            /* Dashboard Bento Responsive */
+            .db-bento {
+                grid-template-columns: 1fr !important;
+                padding: 1rem !important;
+            }
+
+            .db-kpi, .db-chart-main, .db-activity, .db-customers, .db-quotes {
+                grid-column: span 1 !important;
+            }
+
+            .db-agent-inner {
+                height: 500px !important;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+
+        .chat-message::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-message::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        #aiChatArea::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #aiChatArea::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        /* AI Communication Protocol - Scientific Luxury */
+        .ia-module-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            height: 100%;
+        }
+
+        .glass-panel {
+            background: rgba(18, 18, 26, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .buffer-editor {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: none;
+            padding: 1rem;
+            outline: none;
+        }
+
+        .neural-log {
+            grid-column: span 3;
+            padding: 1.5rem;
+            overflow-y: hidden;
+            border-left: 1px solid rgba(67, 233, 123, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .neural-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: var(--ai-accent-emerald);
+        }
+
+        .neon-brain {
+            filter: drop-shadow(0 0 5px var(--ai-accent-emerald));
+            animation: brainPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes brainPulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .neural-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+            padding-right: 5px;
+        }
+
+        .log-entry {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .log-entry.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .log-status {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+
+        .log-status.check {
+            color: #00ff88;
+        }
+
+        .log-status.loading {
+            color: #646cff;
+        }
+
+        .log-status.error {
+            color: #ff4444;
+        }
+
+        .log-text {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        :root {
+            --ai-accent-emerald: #43e97b;
+            --ai-text-dim: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ====== INBOX IA - GLOW TAGS ====== */
+        .glow-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .glow-tag.urgent {
+            background: rgba(239, 83, 80, 0.12);
+            color: #ff6b6b;
+            border: 1px solid rgba(239, 83, 80, 0.3);
+            box-shadow: 0 0 10px rgba(239, 83, 80, 0.25);
+        }
+
+        .glow-tag.opportunity {
+            background: rgba(67, 233, 123, 0.1);
+            color: #43e97b;
+            border: 1px solid rgba(67, 233, 123, 0.25);
+            box-shadow: 0 0 10px rgba(67, 233, 123, 0.2);
+        }
+
+        .glow-tag.info {
+            background: rgba(79, 172, 254, 0.1);
+            color: #4facfe;
+            border: 1px solid rgba(79, 172, 254, 0.25);
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.2);
+        }
+
+        .glow-tag.admin {
+            background: rgba(255, 167, 38, 0.1);
+            color: #ffa726;
+            border: 1px solid rgba(255, 167, 38, 0.25);
+            box-shadow: 0 0 10px rgba(255, 167, 38, 0.2);
+        }
+
+        .glow-tag.supplier {
+            background: rgba(153, 50, 204, 0.1);
+            color: #b47aff;
+            border: 1px solid rgba(153, 50, 204, 0.25);
+            box-shadow: 0 0 10px rgba(153, 50, 204, 0.2);
+        }
+
+        /* ====== INBOX EMAIL LIST ITEMS ====== */
+        .inbox-email-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .inbox-email-item:hover {
+            background: rgba(67, 233, 123, 0.04);
+        }
+
+        .inbox-email-item.active {
+            background: rgba(67, 233, 123, 0.07);
+            border-left: 3px solid var(--ai-accent-emerald);
+        }
+
+        .inbox-email-item.unread .email-item-author {
+            font-weight: 800;
+        }
+
+        .inbox-email-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 40%;
+            background: var(--ai-accent-emerald);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .email-item-author {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .email-item-subject {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .email-item-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .email-date-chip {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 500;
+        }
+
+        /* ====== IA PROTOCOL TABS ====== */
+        .ia-tabs {
+            display: flex;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ia-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ia-tab.active {
+            background: rgba(67, 233, 123, 0.1);
+            color: var(--ai-accent-emerald);
+            box-shadow: inset 0 0 10px rgba(67, 233, 123, 0.05);
+        }
+
+        .ia-tab i {
+            font-size: 0.85rem;
+        }
+
+        .ia-context-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ia-context-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-label-premium {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--ai-accent-emerald);
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+        /* ====== EMAIL VIEWER ====== */
+        .email-viewer-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .email-viewer-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .email-viewer-body {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+            line-height: 1.75;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .email-viewer-body::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .email-viewer-body::-webkit-scrollbar-thumb {
+            background: rgba(67, 233, 123, 0.2);
+            border-radius: 4px;
+        }
+
+        /* ====== AI REASONING PANEL ====== */
+        .ia-reasoning-panel {
+            margin: 1rem 2rem;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.05), rgba(56, 249, 215, 0.03));
+            border: 1px solid rgba(67, 233, 123, 0.12);
+            border-left: 3px solid var(--ai-accent-emerald);
+            border-radius: 0 12px 12px 0;
+            flex-shrink: 0;
+        }
+
+        .ia-reasoning-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .ia-pulse-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--ai-accent-emerald);
+            border-radius: 50%;
+            animation: pulse-dot 1.8s infinite;
+            box-shadow: 0 0 6px var(--ai-accent-emerald);
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(0.9);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        .ia-reasoning-label {
+            font-size: 0.62rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            color: var(--ai-accent-emerald);
+            text-transform: uppercase;
+        }
+
+        .ia-reasoning-text {
+            font-size: 0.83rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        /* ====== QUICK ACTIONS BAR ====== */
+        .email-quick-actions {
+            padding: 1rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-qa {
+            padding: 0.45rem 1rem;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-qa:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-qa.primary {
+            background: rgba(100, 108, 255, 0.15);
+            border-color: rgba(100, 108, 255, 0.4);
+            color: #a5b4fc;
+        }
+
+        .btn-qa.emerald {
+            background: rgba(67, 233, 123, 0.1);
+            border-color: rgba(67, 233, 123, 0.3);
+            color: #43e97b;
+        }
+
+        .btn-qa.danger {
+            background: rgba(239, 83, 80, 0.1);
+            border-color: rgba(239, 83, 80, 0.3);
+            color: #ff6b6b;
+            margin-left: auto;
+        }
+
+        .btn-qa.warning {
+            background: rgba(255, 167, 38, 0.1);
+            border-color: rgba(255, 167, 38, 0.3);
+            color: #ffa726;
+        }
+
+        /* ====== SMART INBOX LAYOUT ====== */
+        .smart-inbox-layout {
+            display: grid;
+            grid-template-columns: 240px 340px 1fr;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .inbox-list {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .inbox-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .inbox-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+        }
+
+        /* ai-badge used elsewhere */
+        .ai-badge {
+            display: inline-block;
+            background: rgba(67, 233, 123, 0.1);
+            color: var(--ai-accent-emerald);
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border: 1px solid rgba(67, 233, 123, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo_ninja.png" alt="Letreros Caperuso" class="sidebar-logo">
+            <p>Sistema de Gestión Comercial</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-item" data-page="customers">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                    <span class="badge" id="customersCount">0</span>
+                </a>
+                <a class="nav-item" data-page="quotations">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Cotizaciones</span>
+                    <span class="badge" id="quotationsCount">0</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Ventas</div>
+                <a class="nav-item" data-page="pipeline">
+                    <i class="fas fa-funnel-dollar"></i>
+                    <span>Pipeline</span>
+                </a>
+                <a class="nav-item" data-page="quoter">
+                    <i class="fas fa-calculator"></i>
+                    <span>Cotizador</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Inteligencia IA</div>
+                <!-- AI Modules Section -->
+                <a class="nav-item" data-page="mensajeria-ia">
+                    <i class="fas fa-robot"></i>
+                    <span>Mensajería IA®</span>
+                </a>
+
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Gestión</div>
+                <a class="nav-item" data-page="tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tareas</span>
+                </a>
+                <a class="nav-item" data-page="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reportes</span>
+                </a>
+                <a class="nav-item" data-page="library">
+                    <i class="fas fa-images"></i>
+                    <span>Biblioteca</span>
+                </a>
+                <a class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+        </nav>
+
+        <div style="padding: 1rem 1.5rem; margin-top: auto;">
+            <button class="btn btn-primary" id="downloadAppBtn"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #000; border:none;">
+                <i class="fas fa-download"></i> Descargar App®
+            </button>
+            <div
+                style="display: flex; align-items: center; gap: 8px; margin-top: 1.5rem; font-size: 0.7rem; color: var(--text-secondary);">
+                <div class="sync-dot success" id="syncDot"></div>
+                <span id="syncStatusText">Nube Conectada</span>
+            </div>
+        </div>
+
+        <div id="aiIndicator"
+            style="position: absolute; bottom: 20px; right: -40px; transform: rotate(-90deg); font-size: 0.6rem; color: var(--ai-accent-emerald); opacity: 0.5; font-weight: 900; letter-spacing: 2px;">
+            NEURAL_ACTIVE</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page-section active">
+            <!-- DASHBOARD REDESIGN: Scientific Luxury Bento Grid -->
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+
+                #dashboard {
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    background: transparent;
+                    padding: 0;
+                }
+
+                .db-topbar {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1.5rem 2rem;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                    margin-bottom: 2rem;
+                    background: rgba(5, 5, 10, 0.5);
+                    backdrop-filter: blur(20px);
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                }
+
+                .db-topbar-left h1 {
+                    font-family: 'Syne', sans-serif;
+                    font-size: 1.6rem;
+                    font-weight: 800;
+                    background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    color: transparent;
+                    margin: 0;
+                    letter-spacing: -0.03em;
+                }
+
+                .db-topbar-left span {
+                    font-size: 0.75rem;
+                    color: #475569;
+                    font-family: 'DM Mono', monospace;
+                    text-transform: uppercase;
+                    letter-spacing: 0.12em;
+                }
+
+                .db-topbar-right {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .db-live-badge {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.4rem 0.9rem;
+                    background: rgba(16, 185, 129, 0.1);
+                    border: 1px solid rgba(16, 185, 129, 0.25);
+                    border-radius: 100px;
+                    font-size: 0.72rem;
+                    color: #10b981;
+                    font-family: 'DM Mono', monospace;
+                    letter-spacing: 0.08em;
+                }
+
+                .db-live-dot {
+                    width: 6px;
+                    height: 6px;
+                    background: #10b981;
+                    border-radius: 50%;
+                    animation: livePulse 2s ease-in-out infinite;
+                }
+
+                @keyframes livePulse {
+
+                    0%,
+                    100% {
+                        opacity: 1;
+                        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+                    }
+
+                    50% {
+                        opacity: 0.7;
+                        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+                    }
+                }
+
+                .db-btn-new {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.55rem 1.2rem;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    border: none;
+                    border-radius: 10px;
+                    color: white;
+                    font-size: 0.82rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+                }
+
+                .db-btn-new:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+                }
+
+                #ai-notifications {
+                    padding: 0 2rem;
+                    margin-bottom: 2rem;
+                }
+
+                .ia-alert {
+                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+                    border: 1px solid rgba(139, 92, 246, 0.2);
+                    border-radius: 16px;
+                    padding: 1.25rem 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 1.5rem;
+                    backdrop-filter: blur(10px);
+                    animation: slideUp 0.5s ease-out;
+                }
+
+                .ia-alert-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .ia-alert-icon {
+                    width: 40px;
+                    height: 40px;
+                    background: rgba(139, 92, 246, 0.2);
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #a78bfa;
+                    font-size: 1.25rem;
+                }
+
+                .ia-alert-text h4 {
+                    margin: 0;
+                    font-size: 0.95rem;
+                    color: #f8fafc;
+                    font-weight: 600;
+                }
+
+                .ia-alert-text p {
+                    margin: 0;
+                    font-size: 0.85rem;
+                    color: #94a3b8;
+                }
+
+                .ia-alert-actions {
+                    display: flex;
+                    gap: 0.75rem;
+                }
+
+                .btn-ia-action {
+                    background: #a78bfa;
+                    color: #0f172a;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .btn-ia-action:hover {
+                    background: #c4b5fd;
+                    transform: translateY(-1px);
+                }
+
+                /* BENTO GRID */
+                .db-bento {
+                    padding: 0 2rem 2rem;
+                    display: grid;
+                    grid-template-columns: repeat(12, 1fr);
+                    grid-template-rows: auto;
+                    gap: 1rem;
+                }
+
+                /* Glass Card Base */
+                .db-card {
+                    background: rgba(15, 18, 28, 0.7);
+                    border: 1px solid rgba(255, 255, 255, 0.07);
+                    border-radius: 16px;
+                    backdrop-filter: blur(20px);
+                    transition: all 0.3s ease;
+                    overflow: hidden;
+                    position: relative;
+                }
+
+                .db-card::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 16px;
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+                    pointer-events: none;
+                }
+
+                .db-card:hover {
+                    border-color: rgba(255, 255, 255, 0.12);
+                    transform: translateY(-2px);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+                }
+
+                /* KPI Cards - 3 cols each */
+                .db-kpi {
+                    grid-column: span 3;
+                    padding: 1.5rem;
+                }
+
+                .db-kpi-accent-line {
+                    display: block;
+                    width: 32px;
+                    height: 3px;
+                    border-radius: 2px;
+                    margin-bottom: 1.2rem;
+                }
+
+                .db-kpi-label {
+                    font-size: 0.72rem;
+                    color: #64748b;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    font-weight: 500;
+                    margin-bottom: 0.5rem;
+                }
+
+                .db-kpi-value {
+                    font-family: 'Syne', sans-serif;
+                    font-size: 2.2rem;
+                    font-weight: 800;
+                    color: #f1f5f9;
+                    line-height: 1;
+                    margin-bottom: 0.75rem;
+                    letter-spacing: -0.04em;
+                }
+
+                .db-kpi-delta {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3rem;
+                    font-size: 0.72rem;
+                    font-family: 'DM Mono', monospace;
+                    padding: 0.25rem 0.6rem;
+                    border-radius: 6px;
+                    font-weight: 500;
+                }
+
+                .db-kpi-delta.pos {
+                    background: rgba(16, 185, 129, 0.12);
+                    color: #34d399;
+                }
+
+                .db-kpi-delta.neu {
+                    background: rgba(99, 102, 241, 0.12);
+                    color: #818cf8;
+                }
+
+                /* Sales Chart - 8 cols */
+                .db-chart-main {
+                    grid-column: span 8;
+                    padding: 1.5rem;
+                }
+
+                /* Activity Feed - 4 cols */
+                .db-activity {
+                    grid-column: span 4;
+                    padding: 1.5rem;
+                }
+
+                /* Customer Block - 6 cols */
+                .db-customers {
+                    grid-column: span 6;
+                    padding: 1.5rem;
+                }
+
+                /* Quotation Block - 12 cols */
+                .db-quotes {
+                    grid-column: span 12;
+                    padding: 1.5rem;
+                }
+
+                /* AI Agent - 12 cols */
+                .db-agent {
+                    grid-column: span 12;
+                }
+
+                .db-section-title {
+                    font-family: 'DM Mono', monospace;
+                    font-size: 0.65rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    color: #475569;
+                    margin-bottom: 1.2rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .db-section-title::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .db-card-title {
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: #e2e8f0;
+                    margin-bottom: 0.25rem;
+                }
+
+                .db-card-sub {
+                    font-size: 0.72rem;
+                    color: #475569;
+                    margin-bottom: 1.2rem;
+                }
+
+                /* Mini stat rows */
+                .db-mini-stats {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 0.75rem;
+                    margin-bottom: 1.2rem;
+                }
+
+                .db-mini-stat {
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 10px;
+                    padding: 0.9rem;
+                }
+
+                .db-mini-stat-label {
+                    font-size: 0.68rem;
+                    color: #475569;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    margin-bottom: 0.35rem;
+                }
+
+                .db-mini-stat-val {
+                    font-family: 'Syne', sans-serif;
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    color: #f1f5f9;
+                    letter-spacing: -0.04em;
+                }
+
+                /* Activity items */
+                .db-activity-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.6rem;
+                }
+
+                .db-activity-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    padding: 0.7rem;
+                    background: rgba(255, 255, 255, 0.03);
+                    border-radius: 10px;
+                    transition: background 0.2s;
+                }
+
+                .db-activity-item:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .db-activity-icon {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .db-activity-text {
+                    font-size: 0.78rem;
+                    color: #94a3b8;
+                }
+
+                .db-activity-text strong {
+                    color: #e2e8f0;
+                    display: block;
+                    font-size: 0.8rem;
+                }
+
+                /* Table styling */
+                .db-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 0.78rem;
+                }
+
+                .db-table th {
+                    color: #475569;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    font-size: 0.65rem;
+                    font-weight: 600;
+                    padding: 0.5rem 0.75rem;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    text-align: left;
+                }
+
+                .db-table td {
+                    padding: 0.65rem 0.75rem;
+                    color: #94a3b8;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+                }
+
+                .db-table tr:last-child td {
+                    border-bottom: none;
+                }
+
+                .db-table tr:hover td {
+                    background: rgba(255, 255, 255, 0.02);
+                }
+
+                .db-table .rank-num {
+                    color: #475569;
+                    font-family: 'DM Mono', monospace;
+                }
+
+                /* Calendar Removed */
+
+                /* Agent area */
+                .db-agent-inner {
+                    display: flex;
+                    flex-direction: column;
+                    height: 580px;
+                }
+
+                .db-agent-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1.2rem 1.5rem;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                }
+
+                .db-agent-identity {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.85rem;
+                }
+
+                .db-agent-avatar {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 10px;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+                }
+
+                .db-agent-name {
+                    font-size: 0.88rem;
+                    font-weight: 600;
+                    color: #e2e8f0;
+                }
+
+                .db-agent-status {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    font-size: 0.68rem;
+                    color: #475569;
+                    font-family: 'DM Mono', monospace;
+                }
+
+                .db-agent-online {
+                    width: 6px;
+                    height: 6px;
+                    background: #10b981;
+                    border-radius: 50%;
+                    animation: livePulse 2s ease-in-out infinite;
+                }
+
+                .db-chat-area {
+                    flex: 1;
+                    display: flex;
+                    overflow-y: auto;
+                    padding: 1.5rem;
+                    flex-direction: column;
+                    gap: 1.2rem;
+                }
+
+                .db-chat-msg.db-chat-msg-user {
+                    flex-direction: row-reverse;
+                }
+
+                .db-chat-bubble-user {
+                    background: rgba(167, 139, 250, 0.1) !important;
+                    border: 1px solid rgba(167, 139, 250, 0.2) !important;
+                    border-radius: 12px 12px 0 12px !important;
+                    color: #e2e8f0;
+                }
+
+                .db-typing-cursor {
+                    display: inline-block;
+                    width: 4px;
+                    height: 15px;
+                    background: #10b981;
+                    margin-left: 4px;
+                    animation: db-blink 0.8s infinite;
+                    vertical-align: middle;
+                }
+
+                @keyframes db-blink {
+
+                    0%,
+                    100% {
+                        opacity: 0;
+                    }
+
+                    50% {
+                        opacity: 1;
+                    }
+                }
+
+                .db-agent-online.db-agent-thinking {
+                    background: #a78bfa;
+                    box-shadow: 0 0 10px #a78bfa;
+                    animation: db-pulse-thinking 1.5s infinite;
+                }
+
+                @keyframes db-pulse-thinking {
+                    0% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+
+                    50% {
+                        transform: scale(1.4);
+                        opacity: 0.5;
+                    }
+
+                    100% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+
+                .db-agent-input-container {
+                    margin-top: 1rem;
+                    display: flex;
+                    gap: 0.8rem;
+                    background: rgba(15, 23, 42, 0.4);
+                    border: 1px solid rgba(148, 163, 184, 0.1);
+                    border-radius: 12px;
+                    padding: 0.5rem 0.8rem;
+                    transition: all 0.3s ease;
+                }
+
+                .db-agent-input-container:focus-within {
+                    border-color: rgba(16, 185, 129, 0.4);
+                    background: rgba(15, 23, 42, 0.6);
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                }
+
+                .db-agent-input {
+                    flex: 1;
+                    background: transparent;
+                    border: none;
+                    color: #f8fafc;
+                    font-size: 0.85rem;
+                    outline: none;
+                    padding: 0.4rem 0;
+                }
+
+                .db-agent-input::placeholder {
+                    color: #64748b;
+                }
+
+                .db-agent-send-btn {
+                    background: none;
+                    border: none;
+                    color: #10b981;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.4rem;
+                    border-radius: 8px;
+                    transition: all 0.2s ease;
+                }
+
+                .db-agent-send-btn:hover {
+                    background: rgba(16, 185, 129, 0.1);
+                    transform: scale(1.1);
+                }
+
+                .db-agent-send-btn:disabled {
+                    color: #475569;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+
+                .db-chat-msg {
+                    display: flex;
+                    gap: 0.75rem;
+                    max-width: 85%;
+                }
+
+                .db-chat-msg-icon {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .db-chat-bubble {
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.07);
+                    border-radius: 4px 14px 14px 14px;
+                    padding: 0.9rem 1.1rem;
+                }
+
+                .db-chat-bubble p {
+                    font-size: 0.82rem;
+                    color: #94a3b8;
+                    line-height: 1.6;
+                    margin: 0;
+                }
+
+                .db-chat-bubble p+p {
+                    margin-top: 0.4rem;
+                }
+
+                .db-chat-bubble strong {
+                    color: #e2e8f0;
+                }
+
+                .db-tools-area {
+                    padding: 1rem 1.5rem;
+                    background: rgba(0, 0, 0, 0.2);
+                    border-top: 1px solid rgba(255, 255, 255, 0.06);
+                }
+
+                .db-tools-label {
+                    font-size: 0.62rem;
+                    color: #334155;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    font-family: 'DM Mono', monospace;
+                    margin-bottom: 0.75rem;
+                }
+
+                .db-tools-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 0.5rem;
+                }
+
+                .db-tool-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.65rem 0.9rem;
+                    border-radius: 10px;
+                    border: 1px solid;
+                    background: transparent;
+                    color: white;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                }
+
+                .db-tool-btn:hover {
+                    transform: translateY(-1px);
+                }
+
+                .db-tool-btn.purple {
+                    border-color: rgba(139, 92, 246, 0.3);
+                    color: #a78bfa;
+                }
+
+                .db-tool-btn.purple:hover {
+                    background: rgba(139, 92, 246, 0.1);
+                }
+
+                .db-tool-btn.teal {
+                    border-color: rgba(45, 212, 191, 0.3);
+                    color: #2dd4bf;
+                }
+
+                .db-tool-btn.teal:hover {
+                    background: rgba(45, 212, 191, 0.1);
+                }
+
+                .db-tool-btn.sky {
+                    border-color: rgba(56, 189, 248, 0.3);
+                    color: #38bdf8;
+                }
+
+                .db-tool-btn.sky:hover {
+                    background: rgba(56, 189, 248, 0.1);
+                }
+
+                .db-tool-btn.rose {
+                    border-color: rgba(251, 113, 133, 0.3);
+                    color: #fb7185;
+                }
+
+                .db-tool-btn.rose:hover {
+                    background: rgba(251, 113, 133, 0.1);
+                }
+
+                .db-btn-clear {
+                    background: transparent;
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 8px;
+                    color: #475569;
+                    padding: 0.35rem 0.7rem;
+                    cursor: pointer;
+                    font-size: 0.72rem;
+                    transition: all 0.2s;
+                }
+
+                .db-btn-clear:hover {
+                    border-color: rgba(251, 113, 133, 0.3);
+                    color: #fb7185;
+                }
+
+                /* Chart container */
+                .db-chart-wrap {
+                    position: relative;
+                    height: 200px;
+                }
+
+                /* Empty state */
+                .db-empty {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
+                    color: #334155;
+                    font-size: 0.78rem;
+                    text-align: center;
+                    gap: 0.5rem;
+                }
+
+                .db-empty svg {
+                    opacity: 0.3;
+                }
+
+                /* Glow accents per card */
+                .db-card.glow-emerald {
+                    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.1) inset;
+                }
+
+                .db-card.glow-violet {
+                    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.1) inset;
+                }
+
+                .db-card.glow-sky {
+                    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.1) inset;
+                }
+
+                .db-card.glow-rose {
+                    box-shadow: 0 0 0 1px rgba(251, 113, 133, 0.1) inset;
+                }
+
+                /* Animate on load */
+                @keyframes fadeSlideUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(16px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .db-bento>* {
+                    animation: fadeSlideUp 0.5s ease both;
+                }
+
+                .db-bento>*:nth-child(1) {
+                    animation-delay: 0.05s;
+                }
+
+                .db-bento>*:nth-child(2) {
+                    animation-delay: 0.10s;
+                }
+
+                .db-bento>*:nth-child(3) {
+                    animation-delay: 0.15s;
+                }
+
+                .db-bento>*:nth-child(4) {
+                    animation-delay: 0.20s;
+                }
+
+                .db-bento>*:nth-child(5) {
+                    animation-delay: 0.25s;
+                }
+
+                .db-bento>*:nth-child(6) {
+                    animation-delay: 0.30s;
+                }
+
+                .db-bento>*:nth-child(7) {
+                    animation-delay: 0.35s;
+                }
+
+                .db-bento>*:nth-child(8) {
+                    animation-delay: 0.38s;
+                }
+
+                .db-bento>*:nth-child(9) {
+                    animation-delay: 0.42s;
+                }
+
+                @media (max-width: 1024px) {
+                    .db-topbar {
+                        padding: 1.5rem !important;
+                    }
+
+                    .db-bento {
+                        grid-template-columns: repeat(6, 1fr) !important;
+                        padding: 0 1.5rem 1.5rem !important;
+                    }
+
+                    .db-kpi {
+                        grid-column: span 3 !important;
+                    }
+
+                    .db-chart-main,
+                    .db-activity,
+                    .db-customers,
+                    .db-quotes,
+                    .db-agent {
+                        grid-column: span 6 !important;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .db-topbar {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        padding: 1rem !important;
+                        gap: 1rem !important;
+                    }
+
+                    .db-topbar-right {
+                        width: 100% !important;
+                        justify-content: space-between !important;
+                    }
+
+                    .db-bento {
+                        grid-template-columns: 1fr !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        padding: 0 1rem 1rem !important;
+                        gap: 12px !important;
+                    }
+
+                    .db-card, .db-kpi, .db-chart-main, .db-activity, .db-customers, .db-quotes, .db-agent {
+                        grid-column: span 1 !important;
+                        width: 100% !important;
+                        min-height: auto !important;
+                    }
+
+                    .db-kpi-value {
+                        font-size: 1.8rem !important;
+                    }
+
+                    .db-chart-wrap {
+                        height: 250px !important;
+                    }
+
+                    /* Calendar Mobile Adjustments Removed */
+                }
+            </style>
+
+            <!-- TOP BAR -->
+            <div class="db-topbar">
+                <div class="db-topbar-left">
+                    <h1>Command Center</h1>
+                    <span>ERP Caperuso — Sistema de Gestión Comercial</span>
+                </div>
+                <div class="db-topbar-right">
+                    <div class="db-live-badge">
+                        <span class="db-live-dot"></span>
+                        NEURAL SYNC ACTIVO
+                    </div>
+                    <button class="db-btn-new" onclick="showNewQuotationModal()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Nueva Cotización
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI INTELLIGENCE FEED (Zenith Engine) -->
+            <div id="ai-notifications"></div>
+
+            <!-- BENTO GRID -->
+            <div class="db-bento">
+
+                <!-- KPI 1: Ventas del Mes -->
+                <div class="db-card db-kpi glow-emerald">
+                    <span class="db-kpi-accent-line" style="background: linear-gradient(90deg,#10b981,#059669);"></span>
+                    <div class="db-kpi-label">Ventas del Mes</div>
+                    <div class="db-kpi-value" id="monthSales">$0</div>
+                    <span class="db-kpi-delta pos" id="salesDelta"></span>
+                </div>
+
+                <!-- KPI 2: Clientes Totales -->
+                <div class="db-card db-kpi glow-sky">
+                    <span class="db-kpi-accent-line" style="background: linear-gradient(90deg,#38bdf8,#0ea5e9);"></span>
+                    <div class="db-kpi-label">Clientes Totales</div>
+                    <div class="db-kpi-value" id="totalCustomers">0</div>
+                    <span class="db-kpi-delta pos" id="customersDelta"></span>
+                </div>
+
+                <!-- KPI 3: Cotizaciones Activas -->
+                <div class="db-card db-kpi glow-violet">
+                    <span class="db-kpi-accent-line" style="background: linear-gradient(90deg,#a78bfa,#7c3aed);"></span>
+                    <div class="db-kpi-label">Cotizaciones Activas</div>
+                    <div class="db-kpi-value" id="activeQuotations">0</div>
+                    <span class="db-kpi-delta neu" id="quotesDelta"></span>
+                </div>
+
+                <!-- KPI 4: Tasa de Conversión -->
+                <div class="db-card db-kpi glow-rose">
+                    <span class="db-kpi-accent-line" style="background: linear-gradient(90deg,#fb7185,#e11d48);"></span>
+                    <div class="db-kpi-label">Tasa de Conversión</div>
+                    <div class="db-kpi-value" id="conversionRate">0%</div>
+                    <span class="db-kpi-delta pos" id="conversionDelta"></span>
+                </div>
+
+                <!-- SALES CHART: 8 cols -->
+                <!-- CALENDAR REMOVED BY USER REQUEST -->
+
+                <div class="db-card db-chart-main">
+                    <div class="db-section-title">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="#10b981">
+                            <circle cx="5" cy="5" r="5" />
+                        </svg>
+                        Rendimiento de Ventas
+                    </div>
+                    <div class="db-card-title">Ingresos Últimos 6 Meses</div>
+                    <div class="db-card-sub">Comparativa mensual acumulada</div>
+                    <div class="db-chart-wrap">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- ACTIVITY FEED: 4 cols -->
+                <div class="db-card db-activity">
+                    <div class="db-section-title">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="#38bdf8">
+                            <circle cx="5" cy="5" r="5" />
+                        </svg>
+                        Actividad Reciente
+                    </div>
+                    <div class="db-activity-list" id="activityFeed">
+                        <div class="db-empty">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
+                                <path d="M16 3H8v4h8V3z" />
+                            </svg>
+                            <span>Sin actividad reciente</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI INTELLIGENCE REMOVED BY USER REQUEST -->
+
+                <!-- CLIENTES ANALYTICS REMOVED BY USER REQUEST -->
+
+                <!-- COTIZACIONES ANALYTICS: 12 cols -->
+                <div class="db-card db-quotes">
+                    <div class="db-section-title">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="#a78bfa">
+                            <circle cx="5" cy="5" r="5" />
+                        </svg>
+                        Análisis Detallado de Cotizaciones
+                    </div>
+                    
+                    <!-- Top Stats Grid: 4 columns -->
+                    <div class="db-mini-stats" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+                        <div class="db-mini-stat">
+                            <div class="db-mini-stat-label">Total Cotiz. Realizadas</div>
+                            <div class="db-mini-stat-val" id="totalQuotationsCount">0</div>
+                            <div id="quotationsBreakdown" style="font-size:0.65rem;color:#475569;margin-top:0.25rem;"></div>
+                        </div>
+                        <div class="db-mini-stat">
+                            <div class="db-mini-stat-label">Valor Promedio</div>
+                            <div class="db-mini-stat-val" id="avgQuotationValue">$0</div>
+                        </div>
+                        <div class="db-mini-stat">
+                            <div class="db-mini-stat-label">Principal Cliente</div>
+                            <div class="db-mini-stat-val" id="topBuyerName" style="font-size:1rem;">—</div>
+                            <div id="topBuyerAmount" style="font-size:0.65rem;color:#10b981;"></div>
+                        </div>
+                        <div class="db-mini-stat">
+                            <div class="db-mini-stat-label">Negociaciones Este Mes</div>
+                            <div class="db-mini-stat-val" id="quotationsThisMonth">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Side by Side Content: Chart & Table -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <div class="db-section-title" style="margin-top:0rem;">Tendencia de Productos</div>
+                            <div class="db-chart-wrap" style="height:250px;margin-bottom:0.75rem;">
+                                <canvas id="quotationPeriodChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="db-section-title" style="margin-top:0rem;">Productos Más Demandados</div>
+                            <div id="topProductsTable" style="max-height:250px;overflow-y:auto;">
+                                <table class="db-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Producto / Letrero</th>
+                                            <th>Frecuencia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topProductsBody">
+                                        <tr>
+                                            <td colspan="3" style="text-align:center;color:#334155;padding:2rem 0;">Sin datos</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <!-- Customers Page -->
+        <section id="customers" class="page-section">
+            <div class="page-header">
+                <h2>👥 Clientes</h2>
+                <div class="actions">
+                    <button class="btn btn-outline" onclick="exportCustomers()">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                    <button class="btn btn-secondary" onclick="importCustomersFile()">
+                        <i class="fas fa-file-import"></i> Importar
+                    </button>
+                    <button class="btn btn-danger" id="deleteSelectedBtn" style="display: none;"
+                        onclick="deleteSelectedCustomers()">
+                        <i class="fas fa-trash-alt"></i> Eliminar (<span id="selectedCount">0</span>)
+                    </button>
+                    <button class="btn btn-danger" style="background: var(--gradient-2);"
+                        onclick="deleteAllCustomers()">
+                        <i class="fas fa-trash"></i> Todo
+                    </button>
+                    <button class="btn btn-primary" onclick="showNewCustomerModal()">
+                        <i class="fas fa-user-plus"></i> Nuevo Cliente
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" id="selectAllCustomers"
+                                        onchange="toggleSelectAllCustomers()">
+                                </th>
+                                <th>Cliente</th>
+                                <th>Empresa</th>
+                                <th>Contacto</th>
+                                <th>Cotizaciones</th>
+                                <th>Total Ventas</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <i class="fas fa-users"></i>
+                                        <h3>No hay clientes registrados</h3>
+                                        <p>Comienza agregando tu primer cliente</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quotations Page -->
+        <section id="quotations" class="page-section">
+            <div class="page-header">
+                <h2>📝 Cotizaciones</h2>
+                <div class="actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <button class="btn btn-danger" id="deleteSelectedQuotationsBtn" style="display: none;"
+                        onclick="deleteSelectedQuotations()">
+                        <i class="fas fa-trash-alt"></i> Eliminar (<span id="selectedQuotationsCount">0</span>)
+                    </button>
+                    <button class="btn btn-danger" style="background: var(--gradient-2);"
+                        onclick="deleteAllQuotations()">
+                        <i class="fas fa-trash"></i> Todo
+                    </button>
+                    <button class="btn btn-primary" onclick="showNewQuotationModal()">
+                        <i class="fas fa-plus"></i> Nueva Cotización
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" id="selectAllQuotations"
+                                        onchange="toggleSelectAllQuotations()">
+                                </th>
+                                <th>N° Cotización</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotationsTableBody">
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <i class="fas fa-file-invoice"></i>
+                                        <h3>No hay cotizaciones</h3>
+                                        <p>Crea tu primera cotización</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Page -->
+        <section id="pipeline" class="page-section">
+            <div class="page-header">
+                <h2>🎯 Pipeline de Ventas</h2>
+                <div class="actions">
+                    <button class="btn btn-outline" onclick="togglePipelineStats()">
+                        <i class="fas fa-chart-pie"></i> <span id="pipelineStatsBtnText">Ocultar Reporte</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="showNewOpportunityModal()">
+                        <i class="fas fa-plus"></i> Nueva Oportunidad
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pipeline Dashboard Row -->
+            <div id="pipelineDashboard" style="margin-bottom: 2rem;">
+                <!-- Main Stats Cards -->
+                <div class="grid grid-4" style="gap: 1rem; margin-bottom: 1rem;">
+                    <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--primary); display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Valor Total (Activo + Terminado)">
+                            Valor Total (A + T)</div>
+                        <div id="pipelineStatValue" style="font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0; font-family: 'Outfit';">$0</div>
+                        <div style="font-size: 0.65rem; color: var(--success); font-weight: 600;"><i class="fas fa-chart-line"></i> VOLUMEN TOTAL</div>
+                    </div>
+                    <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--secondary); display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">
+                            Oportunidades</div>
+                        <div id="pipelineStatCount" style="font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0; font-family: 'Outfit';">0</div>
+                        <div style="font-size: 0.65rem; color: var(--text-secondary); font-weight: 600;">EN SEGUIMIENTO ACTIVO</div>
+                    </div>
+                    <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--warning); display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">
+                            Prioridad Alta</div>
+                        <div id="pipelineStatPriority" style="font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0; font-family: 'Outfit';">0</div>
+                        <div style="font-size: 0.65rem; color: var(--danger); font-weight: 600;">REQUERIDAS HOY</div>
+                    </div>
+                    <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--danger); display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700;">
+                            Total Perdido</div>
+                        <div id="pipelineStatLost" style="font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0; color: var(--danger); font-family: 'Outfit';">$0</div>
+                        <div style="font-size: 0.65rem; color: var(--text-secondary); font-weight: 600;"><i class="fas fa-times-circle"></i> FUERA DE Pipeline</div>
+                    </div>
+                </div>
+
+                <!-- Stage Breakdown and Funnel -->
+                <div class="grid grid-2" style="gap: 1rem;">
+                    <!-- Totals by Stage Table Card -->
+                    <div class="card" style="padding: 1.5rem;">
+                        <h3
+                            style="font-size: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+                            💰 Resumen Financiero por Etapa</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(102, 126, 234, 0.1); border-radius: 6px;">
+                                <span><i class="fas fa-file-invoice"></i> Cotización</span>
+                                <strong id="valCotizacion" style="color: #667eea;">$0</strong>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(240, 147, 251, 0.1); border-radius: 6px;">
+                                <span><i class="fas fa-handshake"></i> Negociación</span>
+                                <strong id="valNegociacion" style="color: #f093fb;">$0</strong>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(79, 172, 254, 0.1); border-radius: 6px;">
+                                <span><i class="fas fa-industry"></i> Fabricación</span>
+                                <strong id="valFabricacion" style="color: #4facfe;">$0</strong>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(255, 167, 38, 0.1); border-radius: 6px;">
+                                <span><i class="fas fa-hand-holding-usd"></i> Pendiente de Pago</span>
+                                <strong id="valPendientePago" style="color: #ffa726;">$0</strong>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(67, 233, 123, 0.1); border-radius: 6px;">
+                                <span><i class="fas fa-check-circle"></i> Terminado</span>
+                                <strong id="valTerminado" style="color: #43e97b;">$0</strong>
+                            </div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(239, 83, 80, 0.1); border-radius: 6px;">
+                                <span><i class="fas fa-times-circle"></i> Perdido</span>
+                                <strong id="valPerdido" style="color: var(--danger);">$0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Funnel Chart Card -->
+                    <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column;">
+                        <h3
+                            style="font-size: 1rem; margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+                            📊 Embudo de Conversión</h3>
+                        <div style="flex: 1; min-height: 250px; position: relative;">
+                            <canvas id="pipelineFunnelChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pipeline-container">
+                <div class="pipeline-column">
+                    <div class="pipeline-header"
+                        style="flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <span class="pipeline-title">💼 Cotización</span>
+                            <span class="pipeline-count">0</span>
+                        </div>
+                        <div id="totalPipelineCotizacion"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">$0</div>
+                    </div>
+                    <div id="pipelineCotizacion" class="pipeline-drop-zone"></div>
+                </div>
+
+                <div class="pipeline-column">
+                    <div class="pipeline-header"
+                        style="flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <span class="pipeline-title">🤝 Negociación</span>
+                            <span class="pipeline-count">0</span>
+                        </div>
+                        <div id="totalPipelineNegociacion"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">$0</div>
+                    </div>
+                    <div id="pipelineNegociacion" class="pipeline-drop-zone"></div>
+                </div>
+
+                <div class="pipeline-column">
+                    <div class="pipeline-header"
+                        style="flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <span class="pipeline-title">🏭 Fabricación</span>
+                            <span class="pipeline-count">0</span>
+                        </div>
+                        <div id="totalPipelineFabricacion"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">$0</div>
+                    </div>
+                    <div id="pipelineFabricacion" class="pipeline-drop-zone"></div>
+                </div>
+
+                <div class="pipeline-column">
+                    <div class="pipeline-header"
+                        style="flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <span class="pipeline-title">💰 Pendiente de Pago</span>
+                            <span class="pipeline-count">0</span>
+                        </div>
+                        <div id="totalPipelinePendientePago"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">$0</div>
+                    </div>
+                    <div id="pipelinePendienteDePago" class="pipeline-drop-zone"></div>
+                </div>
+
+                <div class="pipeline-column">
+                    <div class="pipeline-header"
+                        style="flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <span class="pipeline-title">✅ Terminado</span>
+                            <span class="pipeline-count">0</span>
+                        </div>
+                        <div id="totalPipelineTerminado"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">$0</div>
+                    </div>
+                    <div id="pipelineTerminado" class="pipeline-drop-zone"></div>
+                </div>
+
+                <div class="pipeline-column">
+                    <div class="pipeline-header"
+                        style="flex-direction: column; align-items: flex-start; gap: 0.2rem; padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <span class="pipeline-title">❌ Perdido</span>
+                            <span class="pipeline-count">0</span>
+                        </div>
+                        <div id="totalPipelinePerdido"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">$0</div>
+                    </div>
+                    <div id="pipelinePerdido" class="pipeline-drop-zone"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quoter Page (Original Functionality) -->
+        <section id="quoter" class="page-section">
+            <div class="page-header">
+                <h2>🧮 Cotizador de Letreros</h2>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="showNewQuotationModal()">
+                        <i class="fas fa-plus"></i> Nueva Cotización
+                    </button>
+                </div>
+            </div>
+
+            <!-- Original quoter will be embedded here -->
+            <div id="quoterContent"></div>
+        </section>
+
+        <!-- Tasks Page -->
+        <section id="tasks" class="page-section">
+            <div class="page-header">
+                <h2>✅ Tareas</h2>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="showNewTaskModal()">
+                        <i class="fas fa-plus"></i> Nueva Tarea
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pendientes</h3>
+                        <span class="badge badge-warning">0</span>
+                    </div>
+                    <div id="tasksPending"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">En Progreso</h3>
+                        <span class="badge badge-primary">0</span>
+                    </div>
+                    <div id="tasksInProgress"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Completadas</h3>
+                        <span class="badge badge-success">0</span>
+                    </div>
+                    <div id="tasksCompleted"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Page -->
+        <section id="reports" class="page-section">
+            <div class="page-header">
+                <div>
+                    <h2>📊 Centro de Reportes y Análisis</h2>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Resumen de rendimiento, ventas y
+                        gestión de clientes</p>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="updateReports()">
+                        <i class="fas fa-sync-alt"></i> Actualizar Datos
+                    </button>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-download"></i> Exportar PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Summary Metrics -->
+            <div class="grid grid-4" style="margin-bottom: 2rem; gap: 1rem;">
+                <div class="card"
+                    style="padding: 1.5rem; text-align: center; background: linear-gradient(135deg, rgba(153, 50, 204, 0.1) 0%, rgba(29, 162, 245, 0.1) 100%);">
+                    <div
+                        style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+                        Ventas Totales</div>
+                    <div id="reportTotalSales" style="font-size: 1.75rem; font-weight: 800; color: var(--primary);">$0
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">Cotizaciones
+                        Aprobadas</div>
+                </div>
+                <div class="card" style="padding: 1.5rem; text-align: center;">
+                    <div
+                        style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+                        Tasa de Conversión</div>
+                    <div id="reportConversionRate" style="font-size: 1.75rem; font-weight: 800; color: var(--success);">
+                        0%</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">Cotizaciones vs
+                        Ventas</div>
+                </div>
+                <div class="card" style="padding: 1.5rem; text-align: center;">
+                    <div
+                        style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+                        Ticket Promedio</div>
+                    <div id="reportAvgTicket" style="font-size: 1.75rem; font-weight: 800; color: var(--secondary);">$0
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">Por cada venta
+                    </div>
+                </div>
+                <div class="card" style="padding: 1.5rem; text-align: center;">
+                    <div
+                        style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">
+                        Tareas Pendientes</div>
+                    <div id="reportPendingTasks" style="font-size: 1.75rem; font-weight: 800; color: var(--warning);">0
+                    </div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">Por completar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid Layer 1 -->
+            <div class="grid grid-2" style="margin-bottom: 2rem;">
+                <div class="card" style="padding: 1.5rem;">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h3 class="card-title"><i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                            Tendencia de Ventas (6 meses)</h3>
+                    </div>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="reportSalesTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h3 class="card-title"><i class="fas fa-tasks" style="color: var(--warning);"></i> Estado de
+                            Tareas</h3>
+                    </div>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="reportTasksChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid Layer 2 -->
+            <div class="grid grid-3">
+                <div class="card" style="padding: 1.5rem;">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h3 class="card-title"><i class="fas fa-filter" style="color: var(--secondary);"></i> Valor por
+                            Etapa</h3>
+                    </div>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="reportPipelineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h3 class="card-title"><i class="fas fa-users" style="color: var(--success);"></i> Top Clientes
+                        </h3>
+                    </div>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="reportTopCustomersChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h3 class="card-title"><i class="fas fa-layer-group" style="color: var(--primary);"></i> Mezcla
+                            de Materiales</h3>
+                    </div>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="materialsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mensajería IA® Page (Scientific Luxury Design) -->
+        <section id="mensajeria-ia" class="page-section">
+            <div
+                style="display: flex; flex-direction: column; gap: 1.5rem; padding: 2rem; height: calc(100vh - 80px); overflow: hidden;">
+
+                <!-- TOP HEADER PANEL -->
+                <div class="glass-panel"
+                    style="padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; flex-direction: row;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div
+                            style="width: 48px; height: 48px; border-radius: 12px; background: rgba(100, 108, 255, 0.1); border: 1px solid rgba(100, 108, 255, 0.3); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-microchip" style="color: var(--ai-accent-emerald); font-size: 1.5rem;"></i>
+                        </div>
+                        <div>
+                            <h2
+                                style="font-size: 1.5rem; margin: 0; font-weight: 700; background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                AI Communication Protocol
+                            </h2>
+                            <p style="font-size: 0.85rem; color: var(--ai-text-dim); margin: 5px 0 0 0;">Orquestación de
+                                mensajes estratégicos optimizados por redes neuronales</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-outline" onclick="configureGeminiKey()"
+                            style="border-color: rgba(255,255,255,0.1); padding: 0.5rem 1.5rem;"><i
+                                class="fas fa-key"></i> API Token</button>
+                        <button class="btn btn-primary" id="generateIAMsgBtn"
+                            style="background: var(--gradient-1); box-shadow: 0 0 15px rgba(100, 108, 255, 0.4); padding: 0.5rem 1.5rem; font-weight: 600;"
+                            onclick="generateIAPageMessage()">
+                            <i class="fas fa-microchip"></i> Ejecutar Generación
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ia-module-container" style="flex: 1; padding: 0; height: auto;">
+                    <!-- Left: Parameters -->
+                    <div class="glass-panel" style="grid-column: span 3; padding: 1.5rem; overflow-y: auto;">
+                        <h3
+                            style="font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2rem;">
+                            PARAMETERS <i class="fas fa-sliders-h" style="float: right; opacity: 0.5;"></i></h3>
+
+                        <div class="ia-tabs" style="display: none;">
+                            <div id="tab-quotation" class="ia-tab active" onclick="switchIAContext('quotation')">
+                                <i class="fas fa-file-invoice-dollar"></i> Cotización
+                            </div>
+                        </div>
+
+                        <div id="ctx-quotation" class="ia-context-panel active">
+                            <div class="form-group">
+                                <label class="form-label-premium">SELECCIONAR COTIZACIÓN</label>
+                                <select id="iaQuotationSelect" class="form-control" style="background: rgba(0,0,0,0.3);"
+                                    onchange="loadQuotationForIA()">
+                                    <option value="">-- Buscar Cotización --</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div id="iaQuotationPreview"
+                            style="display: none; margin-bottom: 1.5rem; padding: 1rem; background: rgba(67, 233, 123, 0.05); border: 1px solid rgba(67, 233, 123, 0.1); border-radius: 8px;">
+                            <div id="iaPreviewClient" style="font-weight: 700; color: var(--ai-accent-emerald);"></div>
+                            <div id="iaPreviewTotal" style="font-size: 1.2rem; margin: 5px 0;">$0</div>
+                            <div id="iaPreviewItems" style="font-size: 0.75rem; opacity: 0.7;"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-premium">INTENCIÓN DEL MENSAJE</label>
+                            <select id="iaMsgType" class="form-control" style="background: rgba(0,0,0,0.3);">
+                                <option value="sales">🚀 Venta Persuasiva</option>
+                                <option value="followup">⏳ Seguimiento</option>
+                                <option value="collection">💰 Cobranza</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-premium">ESTRATEGIA (FRAMEWORK)</label>
+                            <select id="iaFrameworkSelect" class="form-control" style="background: rgba(0,0,0,0.3);">
+                                <option value="none">Sin Framework (Libre)</option>
+                                <option value="aida">AIDA (Atención, Interés, Deseo, Acción)</option>
+                                <option value="pas">PAS (Problema, Agitación, Solución)</option>
+                                <option value="bab">BAB (Antes, Después, Puente)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-premium">OBJETIVO ESTRATÉGICO</label>
+                            <select id="iaGoalSelect" class="form-control" style="background: rgba(0,0,0,0.3);">
+                                <option value="none">General</option>
+                                <option value="close">Cerrar Venta / Solicitar Pago</option>
+                                <option value="objection">Resolver Objeción de Precio</option>
+                                <option value="schedule">Agendar Instalación / Visita</option>
+                                <option value="upsell">Ofrecer Producto Adicional</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-premium">TONO Y PERSONALIDAD</label>
+                            <select id="iaMsgTone" class="form-control" style="background: rgba(0,0,0,0.3);">
+                                <option value="normal">Profesional Cercano</option>
+                                <option value="formal">Formal</option>
+                                <option value="bold">Audaz y Directo</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-premium">EXTENSIÓN</label>
+                            <select id="iaMsgLength" class="form-control" style="background: rgba(0,0,0,0.3);">
+                                <option value="short">Corto</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="detailed">Detallado</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 0.75rem;">AI OPERATOR (DIRECT GOOGLE AI)</label>
+                            <select id="iaModelSelectPage" class="form-control"
+                                style="background: rgba(0,0,0,0.3); color: var(--ai-accent-emerald); font-weight: 700;">
+                                <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash (Súper Rápido + Preciso)</option>
+                                <option value="gemini-1.5-flash">Gemini 1.5 Flash (Legacy Estable)</option>
+                                <option value="gemini-1.5-pro">Gemini 1.5 Pro (Razonamiento Profundo)</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <label class="form-label"
+                                style="font-size: 0.75rem; margin-bottom: 1rem; display: block;">CHANNEL</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="hidden" id="iaMessageChannel" value="email">
+                                <button class="btn" id="channelEmail" onclick="setMessageChannel('email')"
+                                    style="flex: 1; border: 1px solid var(--primary); background: rgba(100, 108, 255, 0.1); color: #fff;">Email</button>
+                                <button class="btn" id="channelWhatsapp" onclick="setMessageChannel('whatsapp')"
+                                    style="flex: 1; border: 1px solid rgba(255,255,255,0.1); color: var(--text-secondary);">WA</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center: Construct Buffer -->
+                    <div class="glass-panel" style="grid-column: span 6;">
+
+                        <div
+                            style="flex: 1; display: flex; flex-direction: column; padding: 1.5rem; position: relative;">
+                            <span
+                                style="font-size: 0.7rem; letter-spacing: 2px; color: var(--ai-text-dim); margin-bottom: 1rem;">CONSTRUCT_BUFFER</span>
+
+                             <!-- Destination & Subject Protocol -->
+                             <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                                 <div style="flex: 2;">
+                                     <label class="form-label"
+                                         style="font-size: 0.65rem; letter-spacing: 1px; color: rgba(255,255,255,0.4);">RECIPIENT_ADDRESS</label>
+                                     <input type="text" id="iaOutputRecipient" class="form-control"
+                                         style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; height: 38px;"
+                                         placeholder="destinatario@correo.com">
+                                 </div>
+                                 <div style="flex: 3;">
+                                     <label class="form-label"
+                                         style="font-size: 0.65rem; letter-spacing: 1px; color: rgba(255,255,255,0.4);">COMMUNICATION_HEADER</label>
+                                     <input type="text" id="iaOutputSubject" class="form-control"
+                                         style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; height: 38px;"
+                                         placeholder="Propuesta estratégica de valor">
+                                 </div>
+                             </div>
+
+                             <!-- Subject Alternatives (Hidden by default) -->
+                             <div id="iaSubjectOptions" style="display:none; margin-bottom: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.02); border-radius: 8px;">
+                                 <label class="form-label" style="font-size: 0.6rem; color: var(--ai-accent-emerald); letter-spacing: 1px; margin-bottom: 0.5rem; display:block;">GEMINI_SUBJECT_SUGGESTIONS</label>
+                                 <div id="subjectList" style="display:flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+                             </div>
+
+                            <textarea id="iaOutputBody" class="buffer-editor"
+                                style="flex: 1; background: transparent; border: none; font-size: 0.95rem; line-height: 1.6; color: #e0e0e0; font-family: 'Inter', sans-serif; resize: none; min-height: 250px;"
+                                placeholder="Esperando parámetros para construcción neuronal..."></textarea>
+
+                            <!-- Floating Controls -->
+                            <div style="position: absolute; bottom: 2rem; right: 2rem; display: flex; gap: 0.75rem;">
+                                <button class="btn btn-outline"
+                                    style="background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.1);"
+                                    onclick="copyIAMessage()"><i class="fas fa-copy"></i> Copy</button>
+                                <button class="btn btn-primary" id="iaExecuteTransmission"
+                                    style="background: #00ff88; color: #000; border: none; font-weight: 700; box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);"
+                                    onclick="openIAMailClient()">
+                                    <i class="fas fa-paper-plane"></i> Execute Transmission
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel neural-log" style="grid-column: span 3; padding:1.5rem; overflow-y:auto;">
+                        <h3 style="font-size: 0.8rem; letter-spacing: 1.5px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1rem;">NEURAL_LOG <i class="fas fa-terminal" style="float: right; opacity: 0.5;"></i></h3>
+                        <div id="iaNeuralLogContent" style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ai-text-dim); line-height: 1.8;">
+                            [SYSTEM READY]<br>
+                            Waiting for cognitive trigger...
+                        </div>
+
+                        <!-- Strategic Advice -->
+                        <div id="iaStrategicAdvice" style="display:none; margin-top: 1.5rem; padding: 1rem; background: rgba(67, 233, 123, 0.05); border: 1px solid rgba(67, 233, 123, 0.1); border-radius: 8px;">
+                            <h4 style="font-size: 0.65rem; color: var(--ai-accent-emerald); font-weight: 700; display:flex; align-items:center; gap:6px;">
+                                <i class="fas fa-lightbulb"></i> STRATEGIC_INSIGHT
+                            </h4>
+                            <p id="iaAdviceText" style="font-size: 0.75rem; color: var(--ai-text-dim); margin-top: 6px;"></p>
+                        </div>
+                    </div>
+                        <div class="neural-header">
+                            <h3 style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;">Neural_Log
+                            </h3>
+                            <i class="fas fa-atom neon-brain" style="margin-left: auto;"></i>
+                        </div>
+                        <div id="iaNeuralLog" class="neural-timeline">
+                            <!-- Reasoning log will be injected here -->
+                            <div
+                                style="text-align: center; color: var(--ai-text-dim); padding-top: 2rem; font-size: 0.8rem;">
+                                <p>Esperando inicio de protocolo...</p>
+                                <i class="fas fa-circle-notch fa-spin"
+                                    style="opacity: 0.2; font-size: 2rem; margin-top: 1rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- Settings Page -->
+        <section id="settings" class="page-section">
+            <div class="page-header">
+                <h2>⚙️ Configuración</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Precios de Materiales</h3>
+                    <button class="btn btn-primary" onclick="showEditPricesModal()">
+                        <i class="fas fa-edit"></i> Editar Precios
+                    </button>
+                </div>
+                <div id="materialsSettings"></div>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Gestión de Datos</h3>
+                </div>
+                <div class="grid grid-3">
+                    <button class="btn btn-secondary" onclick="exportAllData()">
+                        <i class="fas fa-download"></i> Exportar Datos
+                    </button>
+                    <button class="btn btn-outline" onclick="importData()">
+                        <i class="fas fa-upload"></i> Importar Datos
+                    </button>
+                    <button class="btn btn-danger" style="background: var(--gradient-2);" onclick="clearAllData()">
+                        <i class="fas fa-trash"></i> Limpiar Datos
+                    </button>
+                </div>
+            </div>
+        </section>
+        <!-- Library Page -->
+        <section id="library" class="page-section">
+            <div class="page-header">
+                <h2>📸 Biblioteca de Referencias</h2>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="showAddImageModal()">
+                        <i class="fas fa-plus"></i> Agregar Imagen
+                    </button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Filtros</h3>
+                </div>
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Buscar</label>
+                        <input type="text" class="form-control" id="librarySearch" placeholder="Título o etiquetas..."
+                            onkeyup="filterLibrary()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-control" id="libraryCategoryFilter" onchange="filterLibrary()">
+                            <option value="">Todas</option>
+                            <option value="Trabajos">Trabajos Realizados</option>
+                            <option value="Productos">Productos</option>
+                            <option value="Materiales">Materiales</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="libraryGrid" class="grid grid-4">
+                <!-- Javascript will populate this -->
+                <div class="empty-state">
+                    <i class="fas fa-images"></i>
+                    <h3>Biblioteca Vacía</h3>
+                    <p>Agrega imágenes para usarlas en tus cotizaciones</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Image Modal -->
+    <div class="modal" id="addImageModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Agregar Imagen</h3>
+                <button class="modal-close" onclick="closeModal('addImageModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addImageForm">
+                    <div class="form-group">
+                        <label class="form-label">Título</label>
+                        <input type="text" class="form-control" name="title" required
+                            placeholder="Ej: Letrero LED Farmacia">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Imagen</label>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="imageSource" value="url" checked
+                                    onchange="toggleImageSource('url')"> URL Externa
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="imageSource" value="file"
+                                    onchange="toggleImageSource('file')"> Subir Archivo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="urlInputContainer">
+                        <label class="form-label">URL de la Imagen</label>
+                        <input type="url" class="form-control" name="url" id="imageUrlInput" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group" id="fileInputContainer" style="display: none;">
+                        <label class="form-label">Subir Imagen</label>
+                        <input type="file" class="form-control" name="imageFile" id="imageFileInput" accept="image/*">
+                        <small style="color: var(--text-secondary);">Formatos: JPG, PNG, GIF, WEBP (Máx 5MB)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-control" name="category" required>
+                            <option value="Trabajos">Trabajos Realizados</option>
+                            <option value="Productos">Productos</option>
+                            <option value="Materiales">Materiales</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Etiquetas (separadas por coma)</label>
+                        <input type="text" class="form-control" name="tags" placeholder="led, exterior, farmacia">
+                    </div>
+                    <div style="text-align: right; margin-top: 1.5rem;">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('addImageModal')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="saveImageBtn">Guardar Imagen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Selection Modal (Reuse for Quote/Email) -->
+    <div class="modal" id="imageSelectionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Seleccionar Imagen</h3>
+                <button class="modal-close" onclick="closeModal('imageSelectionModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="imageSelectionSearch" placeholder="Buscar imagen..."
+                        onkeyup="filterImageSelection()">
+                </div>
+                <div id="imageSelectionGrid" class="grid grid-4"
+                    style="max-height: 400px; overflow-y: auto; padding: 0.5rem;">
+                    <!-- Javascript will populate this -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Customer Modal -->
+    <div id="newCustomerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuevo Cliente</h3>
+                <button class="modal-close" onclick="closeModal('newCustomerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newCustomerForm">
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Empresa</label>
+                            <input type="text" class="form-control" name="empresa">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">RUT</label>
+                            <input type="text" class="form-control" name="rut">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" name="telefono" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" name="correo" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giro Comercial</label>
+                            <input type="text" class="form-control" name="giro">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-control" name="direccion">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notas</label>
+                        <textarea class="form-control" name="notas"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('newCustomerModal')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Cliente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Task Modal -->
+    <div id="newTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nueva Tarea</h3>
+                <button class="modal-close" onclick="closeModal('newTaskModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newTaskForm">
+                    <div class="form-group">
+                        <label class="form-label">Título</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Prioridad</label>
+                            <select class="form-control" name="priority">
+                                <option value="low">Baja</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="high">Alta</option>
+                                <option value="urgent">Urgente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha de Vencimiento</label>
+                            <input type="date" class="form-control" name="dueDate">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('newTaskModal')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Tarea
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quotation View Modal -->
+    <div id="quotationModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3>Detalle de Cotización</h3>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="modalApproveBtn" class="btn" style="background: var(--gradient-4); color: white;"
+                        onclick="approveFromModal()">
+                        <i class="fas fa-check-circle"></i> Aprobar
+                    </button>
+                    <button class="btn btn-secondary" onclick="openAIMessageCenter()">
+                        <i class="fas fa-robot"></i> Mensajería IA
+                    </button>
+                    <button class="btn btn-primary" onclick="printCurrentQuotation()">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                    <button class="btn" style="background: #333; color: white;" onclick="startPOSPrint()">
+                        <i class="fas fa-receipt"></i> POS 80mm
+                    </button>
+                    <button class="modal-close" onclick="closeModal('quotationModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body" id="quotationModalBody">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Opportunity to Pipeline Modal -->
+    <div id="addOpportunityModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>Agregar Oportunidad al Pipeline</h3>
+                <button class="modal-close" onclick="closeModal('addOpportunityModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--gray);">Selecciona las cotizaciones que deseas agregar al
+                    pipeline:</p>
+                <div id="availableQuotationsList">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- Customer Search Modal -->
+        <div id="searchCustomerModal" class="modal">
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3>Seleccionar Cliente</h3>
+                    <button class="modal-close" onclick="closeModal('searchCustomerModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" id="searchCustomerInput" class="form-control"
+                            placeholder="Buscar por nombre, empresa o RUT..." onkeyup="filterCustomersForSearch()">
+                    </div>
+                    <div id="customerSearchResults" style="max-height: 400px; overflow-y: auto; margin-top: 1rem;">
+                        <!-- Results will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Message Generator Modal -->
+        <div id="emailMessageModal" class="modal">
+            <div class="modal-content" style="max-width: 700px;">
+                <div class="modal-header">
+                    <h3>
+                        <i class="fas fa-envelope"></i> Mensaje para Cotización
+                        <button class="btn btn-sm btn-outline"
+                            style="margin-left: 10px; padding: 2px 8px; font-size: 0.75rem;"
+                            onclick="configureGeminiKey()" title="Configurar API Key de Gemini">
+                            <i class="fas fa-key"></i> Configurar IA
+                        </button>
+                    </h3>
+                    <button class="modal-close" onclick="closeModal('emailMessageModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="emailLoadingState" style="text-align: center; padding: 3rem; display: none;">
+                        <i class="fas fa-spinner fa-spin"
+                            style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <p style="color: var(--text-secondary);">Generando mensaje con IA...</p>
+                    </div>
+                    <div id="emailContentState">
+                        <div class="form-group">
+                            <label class="form-label">Destinatario:</label>
+                            <input type="email" id="emailTo" class="form-control" placeholder="cliente@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Asunto:</label>
+                            <input type="text" id="emailSubject" class="form-control"
+                                placeholder="Cotización de Letreros">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mensaje:</label>
+                            <textarea id="emailBody" class="form-control" rows="12"
+                                style="min-height: 300px; font-family: inherit; line-height: 1.6;"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                            <button class="btn btn-sm btn-outline" onclick="regenerateEmailMessage()">
+                                <i class="fas fa-sync-alt"></i> Regenerar con IA
+                            </button>
+                            <button class="btn btn-success" onclick="copyEmailToClipboard()">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                            <button class="btn btn-primary" onclick="openEmailClient()">
+                                <i class="fas fa-paper-plane"></i> Abrir en Email
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Task Modal -->
+        <div id="newTaskModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h3>Nueva Tarea</h3>
+                    <button class="modal-close" onclick="closeModal('newTaskModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newTaskForm">
+                        <div class="form-group">
+                            <label class="form-label">Título de la Tarea</label>
+                            <input type="text" class="form-control" name="title" required
+                                placeholder="Ej: Llamar a cliente...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" name="description" rows="3"
+                                placeholder="Detalles adicionales..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Prioridad</label>
+                            <select class="form-control" name="priority">
+                                <option value="normal">Normal</option>
+                                <option value="alta">Alta</option>
+                                <option value="urgente">Urgente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha Límite</label>
+                            <input type="date" class="form-control" name="dueDate">
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                            <button type="button" class="btn btn-outline" onclick="closeModal('newTaskModal')">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Guardar Tarea
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Message Center Modal -->
+        <!-- PWA Install Modal -->
+        <div id="pwaInstallModal" class="modal">
+            <div class="modal-content" style="max-width: 400px; text-align: center; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1);">
+                <div class="modal-header" style="justify-content: center;">
+                    <h2 style="font-family: 'Syne', sans-serif;">Instalar ERP App</h2>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1.5rem; color: var(--primary);">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    
+                    <div id="installAndroid" style="display:none;">
+                        <p style="margin-bottom: 1.5rem;">Haz clic en <b>Aceptar</b> en la parte inferior para instalar la aplicación en tu Android.</p>
+                    </div>
+                    
+                    <div id="installIOS" style="display:none;">
+                        <p style="margin-bottom: 1rem;">Para instalar en iOS:</p>
+                        <ol style="text-align: left; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                            <li>Pulsa el botón <b>Compartir</b> <i class="fas fa-external-link-alt"></i></li>
+                            <li>Baja y elige <b>Añadir a pantalla de inicio</b> <i class="far fa-plus-square"></i></li>
+                        </ol>
+                    </div>
+                    
+                    <div id="installPC" style="display:none;">
+                        <p style="margin-bottom: 1.5rem;">Puedes instalar esta app en tu escritorio para acceso rápido y modo sin conexión.</p>
+                    </div>
+
+                    <button id="directInstallBtn" class="btn btn-primary btn-block" style="display:none; margin-bottom: 1rem;">
+                        <i class="fas fa-download"></i> Instalar Ahora
+                    </button>
+                    
+                    <button class="btn btn-outline btn-block" onclick="closeModal('pwaInstallModal')">
+                        Tal vez luego
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="aiMessageCenterModal" class="modal">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h3>🤖 Centro de Mensajería IA</h3>
+                    <button class="modal-close" onclick="closeModal('aiMessageCenterModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="grid grid-3"
+                        style="margin-bottom: 1.5rem; background: var(--bg-surface); padding: 1rem; border-radius: 8px;">
+                        <div>
+                            <label class="form-label">Tipo de Mensaje</label>
+                            <select id="msgType" class="form-control" onchange="regenerateMessage()">
+                                <option value="sales">🚀 Venta Persuasiva</option>
+                                <option value="followup">⏳ Seguimiento</option>
+                                <option value="collection">💰 Cobranza / Recordatorio</option>
+                                <option value="thanks">🙏 Agradecimiento</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Tono</label>
+                            <select id="msgTone" class="form-control" onchange="regenerateMessage()">
+                                <option value="normal">Normal (Profesional Cercano)</option>
+                                <option value="formal">Formal / Corporativo</option>
+                                <option value="casual">Casual / Amigable</option>
+                                <option value="urgent">Urgente / Directo</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Operador AI (Gemini)</label>
+                            <select id="messageCenterModelSelect" class="form-control" onchange="regenerateMessage()"
+                                style="color: var(--ai-accent-emerald); font-weight: 700;">
+                                <option value="google/gemini-2.5-flash" selected>Gemini 2.5 Flash (Súper Rápido)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Asunto:</label>
+                        <input type="text" id="aiMsgSubject" class="form-control">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Destinatario:</label>
+                        <input type="email" id="aiMsgRecipient" class="form-control">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Mensaje Generado:</label>
+                        <textarea id="aiMsgBody" class="form-control" rows="12"
+                            style="font-family: 'Inter', sans-serif;"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: space-between;">
+                        <button class="btn btn-secondary" onclick="regenerateMessage()">
+                            <i class="fas fa-sync-alt"></i> Regenerar
+                        </button>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-outline" onclick="copyEmailToClipboard()">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                            <button class="btn btn-success" onclick="openMailClient()">
+                                <i class="fas fa-paper-plane"></i> Abrir en Email
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neuro-Floating Action Button (Mobile Only) -->
+        <div id="neuroFab" class="neuro-fab" onclick="openModal('aiMessageCenterModal')">
+            <div class="neuro-fab-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <span class="neuro-fab-text">IA</span>
+        </div>
+
+        <style>
+            .neuro-fab {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 65px;
+                height: 65px;
+                background: linear-gradient(135deg, var(--ai-accent-emerald) 0%, #10b981 100%);
+                border-radius: 50%;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+                z-index: 1000;
+                cursor: pointer;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                border: 2px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .neuro-fab:active {
+                transform: scale(0.9);
+            }
+
+            .neuro-fab-icon {
+                font-size: 1.5rem;
+                color: #050508;
+            }
+
+            .neuro-fab-text {
+                position: absolute;
+                bottom: -10px;
+                background: var(--ai-accent-emerald);
+                color: #000;
+                font-size: 0.6rem;
+                font-weight: 800;
+                padding: 2px 6px;
+                border-radius: 4px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            @media (max-width: 768px) {
+                .neuro-fab {
+                    display: flex;
+                }
+            }
+            
+            /* Support for iPhone Safe Areas */
+            @supports (padding-bottom: env(safe-area-inset-bottom)) {
+                .neuro-fab {
+                    bottom: calc(30px + env(safe-area-inset-bottom));
+                }
+            }
+        </style>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <!-- Security Utils -->
+        <!-- <script src="src/utils/sanitizer.js"></script> -->
+        <script src="app.js?v=1.0.2"></script>
+        <!-- Firebase Cloud Integration -->
+        <!-- <script type="module" src="src/core/firebase.js"></script> -->
+        <!-- PWA / Mobile Modules -->
+        <!-- <script src="pwa-installer.js"></script> -->
+        
+        <!-- UI / Mobile Fixes -->
+        <script>
+            // Handle mobile orientation changes
+            window.addEventListener('resize', () => {
+                if (window.innerWidth < 768) {
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                }
+            });
+
+            // Prevent zoom on input focus for iOS
+            const addMobileMeta = () => {
+                const meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, initial-scale=1, maximum-scale=1';
+                document.head.appendChild(meta);
+            };
+            
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                addMobileMeta();
+            }
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "CRM Letreros Caperuso",
+  "description": "Sistema de gestión comercial y de cotizaciones para letreros",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
